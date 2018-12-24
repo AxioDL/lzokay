@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+project(lzokay)
+add_library(lzokay lzokay.hpp lzokay.cpp)
+set(LZOKAY_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "lzokay include path" FORCE)
+add_executable(lzokaytest test.cpp)
+target_link_libraries(lzokaytest lzokay)
