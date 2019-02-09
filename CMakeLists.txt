@@ -6,7 +6,8 @@ add_library(lzokay lzokay.hpp lzokay.cpp)
 set(LZOKAY_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "lzokay include path" FORCE)
 add_executable(lzokaytest test.cpp)
 target_link_libraries(lzokaytest lzokay)
-set_target_properties(lzokay lzokaytest PROPERTIES CXX_STANDARD 14 CXX_STANDARD_REQUIRED ON)
+target_compile_features(lzokay PRIVATE cxx_std_14)
+target_compile_features(lzokaytest PRIVATE cxx_std_14)
 
 # Set installation for headers
 install(
