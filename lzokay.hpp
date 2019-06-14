@@ -60,13 +60,16 @@ public:
 };
 
 EResult decompress(const uint8_t* src, std::size_t src_size,
-                   uint8_t* dst, std::size_t& dst_size);
+                   uint8_t* dst, std::size_t dst_size,
+                   std::size_t& out_size);
 EResult compress(const uint8_t* src, std::size_t src_size,
-                 uint8_t* dst, std::size_t& dst_size, DictBase& dict);
+                 uint8_t* dst, std::size_t dst_size,
+                 std::size_t& out_size, DictBase& dict);
 inline EResult compress(const uint8_t* src, std::size_t src_size,
-                        uint8_t* dst, std::size_t& dst_size) {
+                        uint8_t* dst, std::size_t dst_size,
+                        std::size_t& out_size) {
   Dict<> dict;
-  return compress(src, src_size, dst, dst_size, dict);
+  return compress(src, src_size, dst, dst_size, out_size, dict);
 }
 
 constexpr std::size_t compress_worst_size(std::size_t s) {

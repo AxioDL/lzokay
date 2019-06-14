@@ -89,7 +89,10 @@ static constexpr uint32_t M4Marker = 0x10;
 static constexpr uint32_t MaxMatchByLengthLen = 34; /* Max M3 len + 1 */
 
 EResult decompress(const uint8_t* src, std::size_t src_size,
-                   uint8_t* dst, std::size_t& dst_size) {
+                   uint8_t* dst, std::size_t init_dst_size,
+                   std::size_t& dst_size) {
+  dst_size = init_dst_size;
+
   if (src_size < 3) {
     dst_size = 0;
     return EResult::InputOverrun;
@@ -591,10 +594,12 @@ static EResult encode_lookback_match(uint8_t*& outp, const uint8_t* outp_end, co
 }
 
 EResult compress(const uint8_t* src, std::size_t src_size,
-                 uint8_t* dst, std::size_t& dst_size, DictBase& dict) {
+                 uint8_t* dst, std::size_t init_dst_size,
+                 std::size_t& dst_size, DictBase& dict) {
   EResult err;
   State s;
   auto& d = static_cast<DictImpl&>(dict);
+  dst_size = init_dst_size;
   uint8_t* outp = dst;
   uint8_t* outp_end = dst + dst_size;
   uint32_t lit_len = 0;
