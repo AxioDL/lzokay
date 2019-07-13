@@ -26,7 +26,7 @@ Usage
 int compress_and_decompress(const uint8_t* data, std::size_t length) {
   lzokay::EResult error;
 
-  /* This variable and 5th parameter of compress() is optional, but may
+  /* This variable and 6th parameter of compress() is optional, but may
    * be reused across multiple compression runs; avoiding repeat
    * allocation/deallocation of the work memory used by the compressor.
    */
