@@ -32,16 +32,18 @@ int compress_and_decompress(const uint8_t* data, std::size_t length) {
    */
   lzokay::Dict<> dict;
 
-  std::size_t compressed_size = lzokay::compress_worst_size(length);
-  std::unique_ptr<uint8_t[]> compressed(new uint8_t[compressed_size]);
-  error = lzokay::compress(data, length, compressed.get(), compressed_size, dict);
+  std::size_t estimated_size = lzokay::compress_worst_size(length);
+  std::unique_ptr<uint8_t[]> compressed(new uint8_t[estimated_size]);
+  std::size_t compressed_size;
+  error = lzokay::compress(data, length, compressed.get(), estimated_size,
+                           compressed_size, dict);
   if (error < lzokay::EResult::Success)
     return 1;
 
   std::unique_ptr<uint8_t[]> decompressed(new uint8_t[length]);
-  std::size_t decompressed_size = length;
+  std::size_t decompressed_size;
   error = lzokay::decompress(compressed.get(), compressed_size,
-                             decompressed.get(), decompressed_size);
+                             decompressed.get(), length, decompressed_size);
   if (error < lzokay::EResult::Success)
     return 1;
 
