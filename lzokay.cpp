@@ -34,7 +34,7 @@ static uint16_t get_le16(const uint8_t* p) {
 }
 #endif
 
-static constexpr std::size_t Max255Count = std::size_t(~0) / 255 - 2;
+constexpr std::size_t Max255Count = std::size_t(~0) / 255 - 2;
 
 #define NEEDS_IN(count) \
   if (inp + (count) > inp_end) { \
@@ -67,26 +67,26 @@ static constexpr std::size_t Max255Count = std::size_t(~0) / 255 - 2;
     *outp++ = l; \
   }
 
-static constexpr uint32_t M1MaxOffset = 0x0400;
-static constexpr uint32_t M2MaxOffset = 0x0800;
-static constexpr uint32_t M3MaxOffset = 0x4000;
-static constexpr uint32_t M4MaxOffset = 0xbfff;
+constexpr uint32_t M1MaxOffset = 0x0400;
+constexpr uint32_t M2MaxOffset = 0x0800;
+constexpr uint32_t M3MaxOffset = 0x4000;
+constexpr uint32_t M4MaxOffset = 0xbfff;
 
-static constexpr uint32_t M1MinLen = 2;
-static constexpr uint32_t M1MaxLen = 2;
-static constexpr uint32_t M2MinLen = 3;
-static constexpr uint32_t M2MaxLen = 8;
-static constexpr uint32_t M3MinLen = 3;
-static constexpr uint32_t M3MaxLen = 33;
-static constexpr uint32_t M4MinLen = 3;
-static constexpr uint32_t M4MaxLen = 9;
+constexpr uint32_t M1MinLen = 2;
+constexpr uint32_t M1MaxLen = 2;
+constexpr uint32_t M2MinLen = 3;
+constexpr uint32_t M2MaxLen = 8;
+constexpr uint32_t M3MinLen = 3;
+constexpr uint32_t M3MaxLen = 33;
+constexpr uint32_t M4MinLen = 3;
+constexpr uint32_t M4MaxLen = 9;
 
-static constexpr uint32_t M1Marker = 0x0;
-static constexpr uint32_t M2Marker = 0x40;
-static constexpr uint32_t M3Marker = 0x20;
-static constexpr uint32_t M4Marker = 0x10;
+constexpr uint32_t M1Marker = 0x0;
+constexpr uint32_t M2Marker = 0x40;
+constexpr uint32_t M3Marker = 0x20;
+constexpr uint32_t M4Marker = 0x10;
 
-static constexpr uint32_t MaxMatchByLengthLen = 34; /* Max M3 len + 1 */
+constexpr uint32_t MaxMatchByLengthLen = 34; /* Max M3 len + 1 */
 
 EResult decompress(const uint8_t* src, std::size_t src_size,
                    uint8_t* dst, std::size_t init_dst_size,
