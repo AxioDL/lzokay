@@ -72,7 +72,7 @@ inline EResult compress(const uint8_t* src, std::size_t src_size,
   return compress(src, src_size, dst, dst_size, out_size, dict);
 }
 
-constexpr std::size_t compress_worst_size(std::size_t s) {
+static constexpr std::size_t compress_worst_size(std::size_t s) {
   return s + s / 16 + 64 + 3;
 }
 
