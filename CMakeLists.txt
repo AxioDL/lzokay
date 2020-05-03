@@ -52,3 +52,5 @@ install(
     FILES "${config_file}" "${version_config_file}"
     DESTINATION ${config_install_dir}
 )
+
+add_subdirectory("lzokay-c")
