@@ -8,6 +8,8 @@ target_include_directories(lzokay PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURC
 target_link_libraries(lzokaytest lzokay)
 target_compile_features(lzokay PRIVATE cxx_std_14)
 target_compile_features(lzokaytest PRIVATE cxx_std_14)
+set_target_properties(lzokay PROPERTIES CXX_STANDARD 14)
+set_target_properties(lzokaytest PROPERTIES CXX_STANDARD 14)
 
 # Set installation for headers
 install(
