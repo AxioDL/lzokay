@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <array>
 
 namespace lzokay {
 
@@ -23,14 +24,14 @@ protected:
 
   /* List encoding of previous 3-byte data matches */
   struct Match3 {
-    uint16_t head[HashSize]; /* key -> chain-head-pos */
-    uint16_t chain_sz[HashSize]; /* key -> chain-size */
-    uint16_t chain[BufSize]; /* chain-pos -> next-chain-pos */
-    uint16_t best_len[BufSize]; /* chain-pos -> best-match-length */
+    std::array<uint16_t, HashSize> head;     /* key -> chain-head-pos */
+    std::array<uint16_t, HashSize> chain_sz; /* key -> chain-size */
+    std::array<uint16_t, BufSize> chain;     /* chain-pos -> next-chain-pos */
+    std::array<uint16_t, BufSize> best_len;  /* chain-pos -> best-match-length */
   };
   /* Encoding of 2-byte data matches */
   struct Match2 {
-    uint16_t head[1 << 16]; /* 2-byte-data -> head-pos */
+    std::array<uint16_t, 1 << 16> head; /* 2-byte-data -> head-pos */
   };
 
   struct Data {
@@ -42,38 +43,33 @@ protected:
      * allocated so the start of the buffer may be replicated at the end,
      * therefore providing efficient circular access.
      */
-    uint8_t buffer[BufSize + MaxMatchLen];
+    std::array<uint8_t, BufSize + MaxMatchLen> buffer;
   };
   using storage_type = Data;
   storage_type* _storage;
   DictBase() = default;
   friend struct State;
-  friend EResult compress(const uint8_t* src, std::size_t src_size,
-                          uint8_t* dst, std::size_t& dst_size, DictBase& dict);
+  friend EResult compress(const uint8_t* src, std::size_t src_size, uint8_t* dst, std::size_t& dst_size,
+                          DictBase& dict);
 };
-template <template<typename> class _Alloc = std::allocator>
+template <template <typename> class _Alloc = std::allocator>
 class Dict : public DictBase {
   _Alloc<DictBase::storage_type> _allocator;
+
 public:
   Dict() { _storage = _allocator.allocate(1); }
   ~Dict() { _allocator.deallocate(_storage, 1); }
 };
 
-EResult decompress(const uint8_t* src, std::size_t src_size,
-                   uint8_t* dst, std::size_t dst_size,
-                   std::size_t& out_size);
-EResult compress(const uint8_t* src, std::size_t src_size,
-                 uint8_t* dst, std::size_t dst_size,
-                 std::size_t& out_size, DictBase& dict);
-inline EResult compress(const uint8_t* src, std::size_t src_size,
-                        uint8_t* dst, std::size_t dst_size,
+EResult decompress(const uint8_t* src, std::size_t src_size, uint8_t* dst, std::size_t dst_size, std::size_t& out_size);
+EResult compress(const uint8_t* src, std::size_t src_size, uint8_t* dst, std::size_t dst_size, std::size_t& out_size,
+                 DictBase& dict);
+inline EResult compress(const uint8_t* src, std::size_t src_size, uint8_t* dst, std::size_t dst_size,
                         std::size_t& out_size) {
   Dict<> dict;
   return compress(src, src_size, dst, dst_size, out_size, dict);
 }
 
-constexpr std::size_t compress_worst_size(std::size_t s) {
-  return s + s / 16 + 64 + 3;
-}
+constexpr std::size_t compress_worst_size(std::size_t s) { return s + s / 16 + 64 + 3; }
 
-}
+} // namespace lzokay
