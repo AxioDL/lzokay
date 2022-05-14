@@ -339,7 +339,7 @@ public:
     }
 
     void init() {
-      std::fill(std::begin(chain_sz), std::end(chain_sz), 0);
+      std::fill(chain_sz.begin(), chain_sz.end(), 0);
     }
 
     void remove(uint32_t pos, const uint8_t* b) {
@@ -412,21 +412,21 @@ public:
     s.wind_sz = uint32_t(std::min(src_size, std::size_t(MaxMatchLen)));
     s.wind_b = 0;
     s.wind_e = s.wind_sz;
-    std::copy_n(s.inp, s.wind_sz, _storage->buffer);
+    std::copy_n(s.inp, s.wind_sz, _storage->buffer.data());
     s.inp += s.wind_sz;
 
     if (s.wind_e == DictBase::BufSize)
       s.wind_e = 0;
 
     if (s.wind_sz < 3)
-      std::fill_n(_storage->buffer + s.wind_b + s.wind_sz, 3, 0);
+      std::fill_n(_storage->buffer.data() + s.wind_b + s.wind_sz, 3, 0);
   }
 
   void reset_next_input_entry(State& s, Match3Impl& match3, Match2Impl& match2) {
     /* Remove match from about-to-be-clobbered buffer entry */
     if (s.cycle1_countdown == 0) {
-      match3.remove(s.wind_e, _storage->buffer);
-      match2.remove(s.wind_e, _storage->buffer);
+      match3.remove(s.wind_e, _storage->buffer.data());
+      match2.remove(s.wind_e, _storage->buffer.data());
     } else {
       --s.cycle1_countdown;
     }
@@ -440,9 +440,9 @@ public:
     if (skip) {
       for (uint32_t i = 0; i < lb_len - 1; ++i) {
         reset_next_input_entry(s, match3, match2);
-        match3.skip_advance(s, _storage->buffer);
-        match2.add(uint16_t(s.wind_b), _storage->buffer);
-        s.get_byte(_storage->buffer);
+        match3.skip_advance(s, _storage->buffer.data());
+        match2.add(uint16_t(s.wind_b), _storage->buffer.data());
+        s.get_byte(_storage->buffer.data());
       }
     }
 
@@ -452,7 +452,7 @@ public:
 
     uint32_t best_pos[MaxMatchByLengthLen] = {};
     uint32_t match_pos, match_count;
-    match3.advance(s, match_pos, match_count, _storage->buffer);
+    match3.advance(s, match_pos, match_count, _storage->buffer.data());
 
     int best_char = _storage->buffer[s.wind_b];
     uint32_t best_len = lb_len;
@@ -462,10 +462,10 @@ public:
       lb_off = 0;
       match3.best_len[s.wind_b] = DictBase::MaxMatchLen + 1;
     } else {
-      if (match2.search(s, lb_pos, lb_len, best_pos, _storage->buffer) && s.wind_sz >= 3) {
+      if (match2.search(s, lb_pos, lb_len, best_pos, _storage->buffer.data()) && s.wind_sz >= 3) {
         for (uint32_t i = 0; i < match_count; ++i, match_pos = match3.chain[match_pos]) {
-          auto ref_ptr = _storage->buffer + s.wind_b;
-          auto match_ptr = _storage->buffer + match_pos;
+          auto ref_ptr = _storage->buffer.data() + s.wind_b;
+          auto match_ptr = _storage->buffer.data() + match_pos;
           auto mismatch = std::mismatch(ref_ptr, ref_ptr + s.wind_sz, match_ptr);
           auto match_len = uint32_t(mismatch.first - ref_ptr);
           if (match_len < 2)
@@ -491,9 +491,9 @@ public:
 
     reset_next_input_entry(s, match3, match2);
 
-    match2.add(uint16_t(s.wind_b), _storage->buffer);
+    match2.add(uint16_t(s.wind_b), _storage->buffer.data());
 
-    s.get_byte(_storage->buffer);
+    s.get_byte(_storage->buffer.data());
 
     if (best_char < 0) {
       s.buf_sz = 0;
